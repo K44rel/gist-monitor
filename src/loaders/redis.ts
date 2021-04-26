@@ -1,9 +1,15 @@
-import Logger from "./logger";
 import { RedisClient } from "redis";
+import { Logger } from "winston";
 
-export default ({ redis }: { redis: RedisClient }): RedisClient => {
+export default ({
+  redis,
+  logger,
+}: {
+  redis: RedisClient;
+  logger: Logger;
+}): RedisClient => {
   redis.on("error", function (error) {
-    Logger.error(error);
+    logger.error(error);
   });
 
   return redis;
