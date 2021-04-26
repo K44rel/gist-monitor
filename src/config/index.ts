@@ -13,4 +13,9 @@ export default {
   logs: {
     level: process.env.LOG_LEVEL || "silly",
   },
+
+  redis: {
+    host: process.env.REDIS_HOST,
+    port: parseInt(process.env.REDIS_PORT),
+  },
 };

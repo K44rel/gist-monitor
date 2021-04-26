@@ -1,10 +1,20 @@
 import express from "express";
+import { Logger } from "winston";
 import routes from "../api";
+import UserService from "../service/user";
 
-export default ({ app }: { app: express.Express }): void => {
+export default ({
+  app,
+  userService,
+  logger,
+}: {
+  app: express.Express;
+  userService: UserService;
+  logger: Logger;
+}): void => {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-  app.use(routes());
+  app.use(routes(userService, logger));
 
   app.use((req, res, next) => {
     const err = new Error("Not Found");
