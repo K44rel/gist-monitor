@@ -23,7 +23,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
     
     - run: npm install
-    - run: npm run eslint --ignore-path .gitignore --ext .ts
+    - run: npm run lint
       
   build:
     needs: [lint]
