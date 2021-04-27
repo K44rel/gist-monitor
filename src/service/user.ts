@@ -12,7 +12,7 @@ export default class UserService {
 
     const users = await this.userRepository.ListUsers();
 
-    this.logger.info(`Got users from repository ${users}`);
+    this.logger.info(`Got users from repository [${users}]`);
 
     return JSON.stringify(users);
   }

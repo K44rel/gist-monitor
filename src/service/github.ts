@@ -16,7 +16,7 @@ export default class GithubService {
       responseType: "json",
     });
 
-    this.logger.silly(`Github responded ${JSON.stringify(resp.data)}`);
+    this.logger.info(`Github responded with ${resp.data.length} gists`);
 
     return resp.data;
   }

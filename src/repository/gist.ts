@@ -32,11 +32,14 @@ export default class GistRepository {
     this.logger.info(`Getting recent gists for user ${user}`);
 
     const key = this.recentKey(user);
-    const recent = await asyncSmembers(key);
 
-    this.logger.silly(`Got gists ${recent}`);
-
-    return JSON.parse(recent);
+    try {
+      const recent = await asyncSmembers(key);
+      this.logger.silly(`Got gists ${recent}`);
+      return JSON.parse(recent);
+    } catch (error) {
+      return [];
+    }
   }
 
   public async SaveRecents(
@@ -51,9 +54,12 @@ export default class GistRepository {
     });
   }
 
-  public Exists(user: string, recent: GistResponse): boolean {
+  public async Exists(user: string, recent: GistResponse): Promise<boolean> {
+    const asyncExists = promisify(this.redisClient.exists).bind(
+      this.redisClient
+    );
     const key = this.saveKey(user, recent);
-    const exists = this.redisClient.exists(key);
+    const exists = (await asyncExists(key)) === 1;
     this.logger.silly(`Checking for existance of key ${key} exists: ${exists}`);
     return exists;
   }

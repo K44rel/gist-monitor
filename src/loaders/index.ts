@@ -8,6 +8,8 @@ import LoggerInstance from "./logger";
 import GistService from "../service/gist";
 import GistRepository from "../repository/gist";
 import GithubService from "../service/github";
+import config from "../config";
+import cron from "node-cron";
 
 export default async ({
   expressApp,
@@ -32,6 +34,7 @@ export default async ({
     githubService,
     LoggerInstance
   );
+  LoggerInstance.info("Dependencies injected");
 
   await ExpressInstance({
     app: expressApp,
@@ -40,6 +43,13 @@ export default async ({
     logger: LoggerInstance,
   });
   LoggerInstance.info("Express loaded");
+
+  cron.schedule(config.cron, async function () {
+    LoggerInstance.info("Starting periodic update");
+    await gistService.UpdateGists();
+    LoggerInstance.info("Periodic update complete");
+  });
+  LoggerInstance.info(`Periodic gist updater started with cron ${config.cron}`);
 
   LoggerInstance.info("Startup process completed");
 };

@@ -101,7 +101,9 @@ describe("GistService", function () {
 
     jest
       .spyOn(gistRepository, "Exists")
-      .mockImplementation((user, gist) => (gist === oldGist ? true : false));
+      .mockImplementation((user, gist) =>
+        Promise.resolve(gist === oldGist ? true : false)
+      );
 
     jest.spyOn(githubService, "RequestGists").mockResolvedValue(newMockGists);
     jest.spyOn(gistRepository, "GetRecent").mockResolvedValue(oldMockGists);
