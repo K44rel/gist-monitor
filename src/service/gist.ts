@@ -1,17 +1,19 @@
-import axios from "axios";
 import { Logger } from "winston";
 import GistRepository from "../repository/gist";
 import UserRepository from "../repository/user";
 import { GistResponse } from "../types/gist";
+import GithubService from "./github";
 
 export default class GistService {
   constructor(
     private userRepository: UserRepository,
     private gistRepository: GistRepository,
+    private githubService: GithubService,
     private logger: Logger
   ) {
     this.userRepository = userRepository;
     this.gistRepository = gistRepository;
+    this.githubService = githubService;
     this.logger = logger;
   }
 
@@ -20,14 +22,14 @@ export default class GistService {
 
     this.logger.info(`Updating recent gists for users ${users}`);
 
-    users.forEach(async (user: string) => {
+    for (const user of users) {
       const previous = await this.gistRepository.GetRecent(user);
 
-      this.gistRepository.SaveRecents(user, previous);
+      await this.gistRepository.SaveRecents(user, previous);
 
-      this.gistRepository.DeleteRecent(user);
+      await this.gistRepository.DeleteRecent(user);
 
-      const gists = await this.requestGists(user);
+      const gists = await this.githubService.RequestGists(user);
 
       this.logger.info(
         `Got ${gists.length} gists from github for user ${user}`
@@ -40,27 +42,15 @@ export default class GistService {
 
       this.logger.info(`Saving ${newGists.length} new gists for user ${user}`);
 
-      this.gistRepository.AddRecent(user, newGists);
-    });
+      await this.gistRepository.AddRecent(user, newGists);
+    }
+
+    this.logger.info(`Done updating for users ${users}`);
   }
 
   public async GetRecent(user: string): Promise<GistResponse[]> {
     const recent = await this.gistRepository.GetRecent(user);
 
     return recent;
-  }
-
-  private async requestGists(user: string): Promise<GistResponse[]> {
-    this.logger.info(`Requesting gists for user ${user}`);
-
-    const resp = await axios({
-      url: `https://api.github.com/users/${user}/gists`,
-      method: "GET",
-      responseType: "json",
-    });
-
-    this.logger.silly(`Github responded ${JSON.stringify(resp.data)}`);
-
-    return resp.data;
   }
 }

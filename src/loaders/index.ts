@@ -1,5 +1,5 @@
-import expressInstance from "./express";
-import redisInstance from "./redis";
+import ExpressInstance from "./express";
+import RedisInstance from "./redis";
 import { Express } from "express";
 import { RedisClient } from "redis";
 import UserRepository from "../repository/user";
@@ -7,6 +7,7 @@ import UserService from "../service/user";
 import LoggerInstance from "./logger";
 import GistService from "../service/gist";
 import GistRepository from "../repository/gist";
+import GithubService from "../service/github";
 
 export default async ({
   expressApp,
@@ -17,19 +18,22 @@ export default async ({
 }): Promise<void> => {
   LoggerInstance.info("Startup process initiated");
 
-  const redisClient = redisInstance({ redis: redis, logger: LoggerInstance });
+  const redisClient = RedisInstance({ redis: redis, logger: LoggerInstance });
   LoggerInstance.info("Redis loaded");
 
   const userRepository = new UserRepository(redisClient, LoggerInstance);
   const gistRepository = new GistRepository(redisClient, LoggerInstance);
+
+  const githubService = new GithubService(LoggerInstance);
   const userService = new UserService(userRepository, LoggerInstance);
   const gistService = new GistService(
     userRepository,
     gistRepository,
+    githubService,
     LoggerInstance
   );
 
-  await expressInstance({
+  await ExpressInstance({
     app: expressApp,
     userService,
     gistService,
