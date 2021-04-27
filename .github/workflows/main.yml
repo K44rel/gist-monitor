@@ -22,7 +22,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     
-    - run: npm ci
+    - run: npm install
     - run: eslint --ignore-path .gitignore --ext .ts
       
   build:
@@ -60,5 +60,5 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         
-    - run: npm ci
+    - run: npm install
     - run: npm test
