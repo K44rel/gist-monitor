@@ -18,6 +18,7 @@ export default ({
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   app.use(routes(userService, gistService, logger));
+  app.set("json spaces", 2);
 
   app.use((req, res, next) => {
     const err = new Error("Not Found");

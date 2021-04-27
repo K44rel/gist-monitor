@@ -16,8 +16,9 @@ export default (
 
     try {
       const users = await userService.ListUsers();
-
-      return res.status(200).json(users);
+      res.status(200);
+      res.setHeader("Content-Type", "application/json");
+      return res.send(users);
     } catch (e) {
       logger.error(`Error requesting all users ${e}`);
       return next(e);

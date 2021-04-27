@@ -30,8 +30,9 @@ export default (
 
     try {
       const recent = await gistService.GetRecent(user);
-
-      return res.status(200).json(recent);
+      res.status(200);
+      res.setHeader("Content-Type", "application/json");
+      return res.send(recent);
     } catch (e) {
       logger.error(`Error requesting recent gists for user ${user} ${e}`);
       return next(e);
