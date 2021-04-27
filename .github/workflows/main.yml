@@ -1,0 +1,64 @@
+name: node CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+    
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x]
+     
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use node version ${{ matrix.node-version }}
+    
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    
+    - run: npm ci
+    - run: eslint --ignore-path .gitignore --ext .ts
+      
+  build:
+    needs: [lint]
+    runs-on: ubuntu-latest
+  
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x]
+     
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use node version ${{ matrix.node-version }}
+    
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+        
+    - run: npm ci
+    - run: npm run build — if-present
+    
+  test:
+    needs: [build]
+    runs-on: ubuntu-latest
+  
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x]
+     
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use node version ${{ matrix.node-version }}
+    
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+        
+    - run: npm ci
+    - run: npm test
