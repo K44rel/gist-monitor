@@ -60,7 +60,7 @@ kubectl apply -f redis.yml
 
 ### Deploy gist-monitor and external load balancer
 
-This will deploy the latest version from the Google Container Registry
+This will deploy the version specified in the yaml from the Google Container Registry
 
 ```shell
 kubectl apply -f node.yml
