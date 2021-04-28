@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: gist-monitor
-        image: gcr.io/gist-monitor-311718/gist-monitor:latest
+        image: gcr.io/gist-monitor-311718/gist-monitor:v2 # This can't be :latest https://stackoverflow.com/questions/48592157/kubernetes-minikube-docker-trying-and-failing-to-pull-image
         imagePullPolicy: IfNotPresent
         resources:
           requests:
