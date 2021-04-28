@@ -32,6 +32,15 @@ jobs:
     - run: |-
         gcloud container clusters get-credentials "$GKE_CLUSTER" --zone "$GKE_ZONE"
 
+    - name: Create .env file
+      uses: SpicyPizza/create-envfile@v1
+      with:
+        envkey_LOG_LEVEL: "info"
+        envkey_REDIS_PORT: 6379
+        envkey_REDIS_HOST: "redis-master"
+        envkey_PORT: 3000
+        envkey_CRON: "0 */3 * * *"
+
     - name: Build
       run: |-
         docker build \
