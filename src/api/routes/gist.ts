@@ -17,7 +17,7 @@ export default (
     try {
       await gistService.UpdateGists();
 
-      return res.status(200).send("Gists updated");
+      return res.status(200).send("Gists updated!");
     } catch (e) {
       logger.error(`Error updating gists ${e}`);
       return next(e);

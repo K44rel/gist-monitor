@@ -70,13 +70,13 @@ kubectl apply -f node.yml
 
 To push a new version of the app to Google Container Registry build a new version of gist-monitor with.
 
-First export the project id into a variable, {project-id} is the output of the previously used `gcloud config get-value project` command.
+First export the project id into a variable, `{project-id}` is the output of the previously used `gcloud config get-value project` command.
 
 ```shell
 export PROJECT_ID={project-id}
 ```
 
-Next, build the production image. Replace {next version tag with a new version}.
+Next, build the image. Replace {next version tag with a new version}.
 
 ```shell
 docker build -t gcr.io/${PROJECT_ID}/gist-monitor:{next version tag} ../
